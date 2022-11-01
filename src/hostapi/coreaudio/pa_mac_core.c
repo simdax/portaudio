@@ -71,6 +71,8 @@
 #include "pa_mac_core_utilities.h"
 #include "pa_mac_core_blocking.h"
 
+#include <simon.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -1237,7 +1239,7 @@ static PaError OpenAndSetupOneAudioUnit(
      *  but I don't think that's relevant here.
      */
     desc.componentType         = kAudioUnitType_Output;
-    desc.componentSubType      = kAudioUnitSubType_HALOutput;
+    //desc.componentSubType      = kAudioUnitSubType_HALOutput;
     desc.componentManufacturer = kAudioUnitManufacturer_Apple;
     desc.componentFlags        = 0;
     desc.componentFlagsMask    = 0;
@@ -2093,11 +2095,11 @@ error:
 }
 
 
-#define HOST_TIME_TO_PA_TIME( x ) ( AudioConvertHostTimeToNanos( (x) ) * 1.0E-09) /* convert to nanoseconds and then to seconds */
+// #define HOST_TIME_TO_PA_TIME( x ) ( AudioConvertHostTimeToNanos( (x) ) * 1.0E-09) /* convert to nanoseconds and then to seconds */
 
 PaTime GetStreamTime( PaStream *s )
 {
-    return HOST_TIME_TO_PA_TIME( AudioGetCurrentHostTime() );
+    return 0; //HOST_TIME_TO_PA_TIME( AudioGetCurrentHostTime() );
 }
 
 #define RING_BUFFER_EMPTY (1000)
@@ -2159,7 +2161,7 @@ static OSStatus AudioIOProc( void *inRefCon,
     PaMacCoreStream *stream           = (PaMacCoreStream*)inRefCon;
     const bool isRender               = inBusNumber == OUTPUT_ELEMENT;
     int callbackResult                = paContinue ;
-    double hostTimeStampInPaTime      = HOST_TIME_TO_PA_TIME(inTimeStamp->mHostTime);
+    double hostTimeStampInPaTime      = 0; //HOST_TIME_TO_PA_TIME(inTimeStamp->mHostTime);
 
     VVDBUG(("AudioIOProc()\n"));
 
@@ -2206,7 +2208,7 @@ static OSStatus AudioIOProc( void *inRefCon,
      output time to give a more accurate impression of the current timeslice but it doesn't
      seem worth it at the moment since other PA host APIs don't do any better.
      */
-    timeInfo.currentTime = HOST_TIME_TO_PA_TIME( AudioGetCurrentHostTime() );
+    //timeInfo.currentTime = HOST_TIME_TO_PA_TIME( AudioGetCurrentHostTime() );
 
     /*
      For an input HAL AU, inTimeStamp is the time the samples are received from the hardware,

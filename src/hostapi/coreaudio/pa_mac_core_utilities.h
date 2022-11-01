@@ -64,6 +64,7 @@
 #include "pa_util.h"
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
+#include <simon.h>
 
 #ifndef MIN
 #define MIN(a, b)  (((a)<(b))?(a):(b))
